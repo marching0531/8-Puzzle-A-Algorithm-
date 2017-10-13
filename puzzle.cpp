@@ -19,7 +19,7 @@ typedef struct node{
 
 NODE start = {{2,8,3,1,6,4,7,-1,5},4};
 NODE goal = {{1,2,3,8,-1,4,7,6,5},5};
-int g = 0;
+int g = 0,stage = 0;
 vector<NODE> open,close;
 
 void draw(NODE &node);
@@ -43,9 +43,8 @@ void draw(NODE &node){
 		else
 			printf("%d ", node.state[i]);
 	}
-	printf("\n\nf(n) is %d and g(n) is %d\n",node.f,g);
-	
-	//printf("\n==============\n");
+	printf("\n\nf(n) = %d and g(n) = %d of stage(%d)",node.f,g,stage);
+	printf("\n==================================\n");
 }
 
 void findChild(){
@@ -62,19 +61,19 @@ void findChild(){
 	
 	if( empty != -1){
 
-		if((empty % 3) != 0){//left
+		if((empty % 3) != 0){
 			pushNode(tmpNode,tmpState,empty,empty-1);
                 }
 
-		if(empty > 2){//up 
+		if(empty > 2){ 
 			pushNode(tmpNode,tmpState,empty,empty-3);
 		}
 
-		if((empty % 3) != 2){//right
+		if((empty % 3) != 2){
 			pushNode(tmpNode,tmpState,empty,empty +1);
                 }
 
-		if(empty < 6){//down
+		if(empty < 6){
 			pushNode(tmpNode,tmpState,empty,empty +3);
 		}	
 			
@@ -146,7 +145,7 @@ int checkOpen(char *node){
 
 void drawClose(){
 	
-	printf("current closed queue state is \n");
+	printf("Current closed queue state is \n");
 	for(int i = 0; i < close.size(); i++){
 
 		for(int j = 0; j < PUZZLE_NUM; j++){
@@ -157,13 +156,13 @@ void drawClose(){
 			else
 				printf("%d ", close[i].state[j]);
 	}	
-	printf("\n\nf(n) is %d and g(n) is %d\n",close[i].f,close[i].g);
+	printf("\n\nf(n) = %d and g(n) = %d\n",close[i].f,close[i].g);
 }
 }
 
 void drawOpen(){
 
-	printf("current opened queue state is \n");
+	printf("Current opened queue state is \n");
 	for(int i = 0; i < open.size(); i++){
 
 		for(int j = 0; j < PUZZLE_NUM; j++){
@@ -174,23 +173,25 @@ void drawOpen(){
 			else
 				printf("%d ", open[i].state[j]);
 	}
-	printf("\n\nf(n) is %d and g(n) is %d\n",open[i].f,open[i].g);
+	printf("\n\nf(n) = %d and g(n) = %d\n",open[i].f,open[i].g);
 	
 }
 }
 
 int main(){
 	open.push_back(start);
-	printf("start state is \n");
+	printf("Start puzzle's state is \n");
 	draw(open.front());
 	while(!open.empty()){
 		if(memcmp(open.front().state, goal.state, 9) == 0){
 			printf("Found Goal!\n");
 			draw(open.front());
+			printf("End Program\n");
 			break;
 		}
 		else{
 			findChild();
+			stage++;
 			draw(open.front());
 			g = open.front().g;
 		}
